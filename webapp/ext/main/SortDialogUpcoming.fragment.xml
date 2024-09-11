@@ -1,0 +1,13 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core">
+	<ViewSettingsDialog
+		id="sortUpcoming"
+		confirm="handleSortDialogConfirm">
+		<sortItems>
+			<ViewSettingsItem id="sortUpcomingDue" text="Due Date" key="insuranceClaimDetails>InsurClmValidFrom" selected="true" />
+			<ViewSettingsItem id="sortUpcomingAmount" text="Amount" key="insuranceClaimDetails>InsurClmItemEvalAmount" />
+			<ViewSettingsItem id="sortUpcomingPaidFor" text="Paid For" key="insuranceClaimDetails>InsurBnftTypeName" />
+		</sortItems>
+	</ViewSettingsDialog>
+</core:FragmentDefinition>

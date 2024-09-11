@@ -1,0 +1,31 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core">
+	<Popover
+		id="myPopoverDocuments"
+		showHeader="false"
+		contentWidth="300px"
+		contentHeight="500px"
+		placement="Left"
+		ariaLabelledBy="master-title">
+		<NavContainer
+			id="navConDocuments">
+			<Page
+				id="masterDocuments"
+				class="sapUiResponsivePadding--header"
+				title="Navigation">
+				<List
+					id="docList"
+					items="{docObjectModel>/value}" >
+					<StandardListItem
+                        id="navigationItemsDocuments"
+						title="{docObjectModel>name}"
+						type="Active"
+						press="handleOpenPdf"
+						iconDensityAware="false"
+						iconInset="false" />
+				</List>
+			</Page>
+		</NavContainer>
+	</Popover>
+</core:FragmentDefinition>

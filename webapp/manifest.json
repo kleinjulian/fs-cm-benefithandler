@@ -1,0 +1,158 @@
+{
+    "_version": "1.59.0",
+    "sap.app": {
+        "id": "fscmbenefithandler",
+        "type": "application",
+        "i18n": "i18n/i18n.properties",
+        "applicationVersion": {
+            "version": "0.0.1"
+        },
+        "title": "{{appTitle}}",
+        "description": "{{appDescription}}",
+        "resources": "resources.json",
+        "sourceTemplate": {
+            "id": "@sap/generator-fiori:fpm",
+            "version": "1.14.1",
+            "toolsId": "87380b11-793c-4d62-8aab-902b039fbc47"
+        },
+        "crossNavigation": {
+            "inbounds": {
+                "intent1": {
+                    "signature": {
+                        "parameters": {},
+                        "additionalParameters": "allowed"
+                    },
+                    "semanticObject": "BenefitHandlerClaim",
+                    "action": "display"
+                }
+            }
+        },
+        "dataSources": {
+            "mainService": {
+                "uri": "/sap/opu/odata4/sap/api_insurclaimsrvcsclaim/srvd_a2x/sap/insuranceclaimsservices/0001/",
+                "type": "OData",
+                "settings": {
+                    "annotations": [
+                        "annotation"
+                    ],
+                    "localUri": "localService/mainService/metadata.xml",
+                    "odataVersion": "4.0"
+                }
+            },
+            "businessPartner": {
+                "uri": "/sap/opu/odata4/sap/api_business_partner/srvd_a2x/sap/api_business_partner/0001/",
+                "type": "OData",
+                "settings": {
+                    "annotations": [
+                        "annotation"
+                    ],
+                    "localUri": "localService/metadata.xml",
+                    "odataVersion": "4.0"
+                }
+            },
+            "annotation": {
+                "type": "ODataAnnotation",
+                "uri": "annotations/annotation.xml",
+                "settings": {
+                    "localUri": "annotations/annotation.xml"
+                }
+            }
+        }
+    },
+    "sap.ui": {
+        "technology": "UI5",
+        "icons": {
+            "icon": "",
+            "favIcon": "",
+            "phone": "",
+            "phone@2": "",
+            "tablet": "",
+            "tablet@2": ""
+        },
+        "deviceTypes": {
+            "desktop": true,
+            "tablet": true,
+            "phone": true
+        }
+    },
+    "sap.ui5": {
+        "flexEnabled": true,
+        "dependencies": {
+            "minUI5Version": "1.120.0",
+            "libs": {
+                "sap.m": {},
+                "sap.ui.core": {},
+                "sap.ushell": {},
+                "sap.fe.templates": {}
+            }
+        },
+        "contentDensities": {
+            "compact": true,
+            "cozy": true
+        },
+        "models": {
+            "i18n": {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "settings": {
+                    "bundleName": "fscmbenefithandler.i18n.i18n"
+                }
+            },
+            "": {
+                "dataSource": "mainService",
+                "preload": true,
+                "settings": {
+                    "operationMode": "Server",
+                    "autoExpandSelect": true,
+                    "earlyRequests": true
+                }
+            },
+            "businessPartner": {
+                "dataSource": "businessPartner",
+                "preload": true,
+                "settings": {
+                    "operationMode": "Server",
+                    "autoExpandSelect": true,
+                    "earlyRequests": true
+                }
+            },
+            "@i18n": {
+                "type": "sap.ui.model.resource.ResourceModel",
+                "uri": "i18n/i18n.properties"
+            }
+        },
+        "resources": {
+            "css": [{
+            "uri": "css/custom.css",
+            "id" : "customcss"
+    }]
+        },
+        "routing": {
+            "config": {},
+            "routes": [
+                {
+                    "name": "InsurClmSrvcsInsurClaimMain",
+                    "pattern": ":?query:",
+                    "target": "InsurClmSrvcsInsurClaimMain"
+                }
+            ],
+            "targets": {
+                "InsurClmSrvcsInsurClaimMain": {
+                    "type": "Component",
+                    "id": "InsurClmSrvcsInsurClaimMain",
+                    "name": "sap.fe.core.fpm",
+                    "options": {
+                        "settings": {
+                            "navigation": {},
+                            "contextPath": "/InsurClmSrvcsInsurClaim",
+                            "viewName": "fscmbenefithandler.ext.main.Main"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "sap.cloud": {
+        "public": true,
+        "service": "fscmbenefithandler"
+    }
+}

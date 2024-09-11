@@ -1,0 +1,15 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core">
+	<ViewSettingsDialog
+		id="sortDialogOutgoing"
+		confirm="handleSortDialogConfirm">
+		<sortItems>
+			<ViewSettingsItem id="postDateSortOutgoing" text="Posting Date" key="insuranceClaimDetails>InsurClmPaytPostgDte" selected="true" />
+			<ViewSettingsItem id="paidToSortOutgoing" text="Paid To" key="insuranceClaimDetails>PayeeName" />
+			<ViewSettingsItem id="paidForSortOutgoing" text="Paid For" key="insuranceClaimDetails>InsurBnftTypeName" />
+			<ViewSettingsItem id="amountSortOutgoing" text="Amount" key="insuranceClaimDetails>InsurClmPaytAmt" />
+			<ViewSettingsItem id="referenceSortOutgoing" text="Reference" key="insuranceClaimDetails>InsurClmPaytDocRefInSubLedger" />
+		</sortItems>
+	</ViewSettingsDialog>
+</core:FragmentDefinition>

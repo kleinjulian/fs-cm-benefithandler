@@ -1,0 +1,31 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:core="sap.ui.core">
+	<Popover
+		id="myPopover"
+		showHeader="false"
+		contentWidth="300px"
+		contentHeight="202px"
+		placement="Top"
+		ariaLabelledBy="master-title">
+		<NavContainer
+			id="navCon">
+			<Page
+				id="master"
+				class="sapUiResponsivePadding--header"
+				title="Navigation">
+				<List
+					id="list"
+					items="{bpLinkModel>/value}" >
+					<StandardListItem
+                        id="navigationItems"
+						title="{bpLinkModel>name}"
+						type="Active"
+						press="handleBpNavigationSelect"
+						iconDensityAware="false"
+						iconInset="false" />
+				</List>
+			</Page>
+		</NavContainer>
+	</Popover>
+</core:FragmentDefinition>

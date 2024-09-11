@@ -1,0 +1,22 @@
+<core:FragmentDefinition
+		xmlns="sap.m"
+		xmlns:core="sap.ui.core"
+		xmlns:tcm="sap.m.table.columnmenu">
+	<tcm:Menu id="columnHeaderMenu" beforeOpen="onBeforeMenuOpen">
+		<tcm:QuickAction id="columnQuickAction" label="Quick Action">
+			<Button id="columnExecuteBtn" text="Execute"></Button>
+		</tcm:QuickAction>
+		<tcm:items>
+			<tcm:Item id="columntItemResetBtn" label="Item" showResetButton="false">
+				<Panel id="columnPanel">
+					<Button id="columnPanelExecuteBtn" text="Execute"></Button>
+				</Panel>
+			</tcm:Item>
+			<tcm:ActionItem
+					id="columnActionItemBtn"
+					label="Action Item"
+					press="onActionItemPress">
+			</tcm:ActionItem>
+		</tcm:items>
+	</tcm:Menu>
+</core:FragmentDefinition>

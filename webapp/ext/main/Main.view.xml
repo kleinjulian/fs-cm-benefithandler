@@ -1,0 +1,736 @@
+<mvc:View xmlns:f="sap.f" xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:macros="sap.fe.macros"
+    xmlns:html="http://www.w3.org/1999/xhtml" xmlns:layout="sap.ui.layout" xmlns:card="sap.f.cards" controllerName="fscmbenefithandler.ext.main.Main" xmlns:ui="sap.ui.table">
+    <Page id="Main">
+        <content>
+            <f:DynamicPage id="rootPage">
+            	<f:title>
+					<f:DynamicPageTitle id="rootPageTitle">
+						<f:heading>
+							<Title id="rootPageTitleText" text="Claim"/>
+						</f:heading>
+						<f:expandedContent>
+							<Label id="subheadingClaimNoExpanded" text="{oMetaModel>/value}"/>
+						</f:expandedContent>
+						<f:snappedContent>
+							<Label id="subheadingClaimNoSnapped" text="{oMetaModel>/value}"/>
+						</f:snappedContent>
+						<f:content>
+							<OverflowToolbar id="overflowToolbar">
+								<GenericTag id="claimClosed"
+									status="Success"
+									press="onPressOpenPopover"
+									design="StatusIconHidden">
+								</GenericTag>
+							</OverflowToolbar>
+						</f:content>
+						<f:actions>
+							<Button
+								id="buttonAction"
+								text="Check Eligibility"
+								type="Emphasized"
+								press="handleButtonPress"/>
+							<Button
+								id="changeToExpertBtn"
+								text="Show Expert Mode"
+								type="Default"
+								press="handleNavigateExpertView"/>
+						</f:actions>
+					</f:DynamicPageTitle>
+				</f:title>
+				<f:header>
+					<f:DynamicPageHeader id="dynamicPageHeader" pinnable="true">
+						<layout:HorizontalLayout id="headerData" allowWrapping="true">
+							<layout:VerticalLayout id="headerDataVerticalLayout" class="sapUiMediumMarginEnd">
+								<ObjectAttribute id="creationDate" title="Creation Date" text="{ path: 'insuranceClaimDetails>/value/CreationDateTime',
+									type: 'sap.ui.model.type.Date',
+									formatOptions: {
+										source: {
+											pattern: 'yyyy-MM-ddTHH:mm:ss.AAAZ'
+										},
+										pattern: 'dd/MM/yyyy'
+									}}"
+								/>
+								<ObjectAttribute id="conscriptName" title="Conscript Name" text="{businessPartnerPolhDetails>/value/BusinessPartnerFullName}"/>
+								<ObjectAttribute id="startService" title="Start of Service" text="{ path: 'businessPartnerConscriptRole>/value/ValidFrom',
+									type: 'sap.ui.model.type.Date',
+									formatOptions: {
+										source: {
+											pattern: 'yyyy-MM-ddTHH:mm:ss.AAAZ'
+										},
+										pattern: 'dd/MM/yyyy'
+									}}"/>
+								<ObjectAttribute id="endService" title="End of Service" text="{ path: 'businessPartnerConscriptRole>/value/ValidTo',
+									formatter: '.showEndService',
+									type: 'sap.ui.model.type.Date',
+									formatOptions: {
+										source: {
+											pattern: 'yyyy-MM-ddTHH:mm:ss.AAAZ'
+										},
+										pattern: 'dd/MM/yyyy'
+									}}"/>
+							</layout:VerticalLayout>
+						</layout:HorizontalLayout>
+					</f:DynamicPageHeader>
+				</f:header>
+				<f:content>
+					<IconTabBar select="onSelectTabFilter" id="iconTabBar" class="sapUiResponsiveContentPadding">
+						<items>
+							<IconTabFilter id="tabClaimantDetails" text="Claimant Details">
+								<layout:VerticalLayout id="claimantVerticalLayout" class="sapUiContentPadding">
+									<layout:HorizontalLayout id="claimantConscriptVerticalLayout">
+										<f:Card id="claimantDetailsCard" width="300px" class="sapUiSmallMarginEnd">
+											<f:header>
+												<card:Header id="claimantDetailsCardHeader" title="{businessPartnerDetails>/value/BusinessPartnerFullName}" subtitle="{businessPartnerDetails>/value/BusinessPartner}" press="handleNavigateBp" />
+											</f:header>
+											<f:content>
+												<layout:VerticalLayout id="verticalLayoutClaimantDetails" class="sapUiTinyMargin">
+													<ObjectAttribute id="verticalLayoutClaimantDetailsFirstName" class="sapUiTinyMargin" title="First Name" text="{businessPartnerDetails>/value/FirstName}"/>
+													<ObjectAttribute id="verticalLayoutClaimantDetailsLastName" class="sapUiTinyMargin" title="Last Name" text="{businessPartnerDetails>/value/LastName}"/>
+													<ObjectAttribute id="verticalLayoutClaimantDetailsBirth" class="sapUiTinyMargin" title="Birth Date" text="{ path: 'businessPartnerDetails>/value/BirthDate',
+														type: 'sap.ui.model.type.Date',
+														formatOptions: {
+															source: {pattern: 'yyyy-MM-dd'},
+															style: 'medium'
+														}}"/>
+													<ObjectAttribute id="verticalLayoutClaimantDetailsStreet" class="sapUiTinyMargin" title="Street Name" text="{businessPartnerDetails>/value/_BusinessPartnerAddress/0/StreetName}"/>
+													<ObjectAttribute id="verticalLayoutClaimantDetailsHouseNo" class="sapUiTinyMargin" title="House Number" text="{businessPartnerDetails>/value/_BusinessPartnerAddress/0/HouseNumber}"/>
+													<ObjectAttribute id="verticalLayoutClaimantDetailsPostalCode" class="sapUiTinyMargin" title="Postal Code" text="{businessPartnerDetails>/value/_BusinessPartnerAddress/0/PostalCode}"/>
+													<ObjectAttribute id="verticalLayoutClaimantDetailsCity" class="sapUiTinyMargin" title="City Name" text="{businessPartnerDetails>/value/_BusinessPartnerAddress/0/CityName}"/>
+													<ObjectAttribute id="verticalLayoutClaimantDetailsNationality" class="sapUiTinyMargin" title="Nationality" text="{businessPartnerDetails>/value/BusPartNatText}"/>
+													<ObjectAttribute id="verticalLayoutClaimantDetailsBpNo" class="sapUiTinyMargin" title="Identification No" text="{businessPartnerDetails>/value/_BuPaIdentification/0/BPIdentificationNumber}"/>
+												</layout:VerticalLayout>
+											</f:content>
+										</f:Card>
+										<f:Card id="incomeDetailsCard" width="300px" class="sapUiSmallMarginEnd">
+											<f:header>
+												<card:Header id="incomeDetailsCardHeader" title="Income Information" subtitle="{businessPartnerDetails>/value/_ConscriptData/0/conscript_partner}" />
+											</f:header>
+											<f:content>
+												<layout:VerticalLayout id="verticalLayoutIncomeDetails" class="sapUiTinyMargin">
+													<ObjectAttribute id="verticalLayoutUnclassifiedIncome" class="sapUiTinyMargin" title="Sum of Income" text="{ parts: [{path: 'bpIncomeDetails>/classifiedIncome'}, {path: 'businessPartnerDetails>/value/_ConscriptData/0/CURRENCY'}], formatter: '.combineAmountCurrency'}"/>
+													<ObjectAttribute id="verticalLayoutClassifiedIncome" class="sapUiTinyMargin" title="Sum of unclassified Income" text="{ parts: [{path: 'bpIncomeDetails>/unclassifiedIncome'}, {path: 'businessPartnerDetails>/value/_ConscriptData/0/CURRENCY'}], formatter: '.combineAmountCurrency'}"/>
+												</layout:VerticalLayout>
+											</f:content>
+										</f:Card>
+										<f:Card id="conscriptDetailsCard" width="300px">
+											<f:header>
+												<card:Header id="conscriptDetailsCardHeader" title="Rent Information" subtitle="{businessPartnerDetails>/value/_ConscriptData/0/conscript_partner}" />
+											</f:header>
+											<f:content>
+												<layout:VerticalLayout id="verticalLayoutConscriptDetails" class="sapUiTinyMargin">
+													<ObjectAttribute id="verticalLayoutConscriptDetailsStreet" class="sapUiTinyMargin" title="Rent Details" text="{ path: 'businessPartnerDetails>/value/_ConscriptData/0/REND_DETAILS', formatter: '.showRentDetails'}"/>
+													<ObjectAttribute id="verticalLayoutConscriptDetailsHouseNo" class="sapUiTinyMargin" title="Rent Type" text="{ path: 'businessPartnerDetails>/value/_ConscriptData/0/RENT_TYPE', formatter: '.showRentType'}"/>
+													<ObjectAttribute id="verticalLayoutClassifiedRentAmount" class="sapUiTinyMargin" title="Rent Amount" text="{ parts: [{path: 'businessPartnerDetails>/value/_ConscriptData/0/rent_amount'}, {path: 'businessPartnerDetails>/value/_ConscriptData/0/CURRENCY'}], formatter: '.combineAmountCurrency'}"/>
+													<ObjectAttribute id="verticalLayoutConscriptDetailsRentStart" class="sapUiTinyMargin" title="Rent Start" text="{ path: 'businessPartnerDetails>/value/_ConscriptData/0/RENT_START',
+														type: 'sap.ui.model.type.Date',
+														formatOptions: {
+															source: {pattern: 'yyyy-MM-dd'},
+															style: 'medium'
+														}}"/>
+													<ObjectAttribute id="verticalLayoutConscriptDetailsRentEnd" class="sapUiTinyMargin" title="Rent End" text="{ path: 'businessPartnerDetails>/value/_ConscriptData/0/RENT_END',
+														type: 'sap.ui.model.type.Date',
+														formatOptions: {
+															source: {pattern: 'yyyy-MM-dd'},
+															style: 'medium'
+													}}"/>
+													<ObjectAttribute id="verticalLayoutConscriptDetailsCity" class="sapUiTinyMargin" title="Rent Reason" text="{ path: 'businessPartnerDetails>/value/_ConscriptData/0/RENT_REASON', formatter: '.showRentReason'}"/>
+												</layout:VerticalLayout>
+											</f:content>
+										</f:Card>
+									</layout:HorizontalLayout>
+									<f:Card id="participantsCard">
+										<f:header>
+											<card:Header id="participantsCardHeader" title="Participants"/>
+										</f:header>
+										<f:content>
+											<Table id="idParticipantsTable"
+												inset="false"
+												items="{ path: 'insuranceClaimDetails>/value/_InsurClmSrvcsParticipant', 
+														sorter: [{
+																path: 'insuranceClaimDetails>InsurClmPartRoleText',
+																descending: false
+															},
+															{
+																path: 'insuranceClaimDetails>BusinessPartnerName',
+																descending: false
+															}
+													]}"
+												>
+												<columns>
+													<Column id="colCardBpNoPart"  demandPopin="true">
+														<Text id="cardBpNoPart" text="BP Number" />
+													</Column>
+													<Column id="colCardBpFullNamePart"  demandPopin="true">
+														<Text id="cardBpFullNamePart" text="Full Name" />
+													</Column>
+													<Column id="colCardBpBirthPart"  demandPopin="true">
+														<Text id="cardBpBirthPart" text="Birth Date" />
+													</Column>
+													<Column id="colCardBpRolePart"  demandPopin="true">
+														<Text id="cardBpRolePart" text="Role" />
+													</Column>
+													<Column id="colCardBpCityPart"  demandPopin="true">
+														<Text id="cardBpCityPart" text="City Name" />
+													</Column>
+													<Column id="colCardBpPostalCodePart"  demandPopin="true">
+														<Text id="cardBpPostalCodePart" text="PostalCode" />
+													</Column>
+													<Column id="colCardBpStreetPart"  demandPopin="true">
+														<Text id="cardBpStreetPart" text="StreetName" />
+													</Column>
+													<Column id="colCardBpHousenoPart"  demandPopin="true">
+														<Text id="cardBpHousenoPart" text="Housenumber" />
+													</Column>
+												</columns>
+												<items>
+													<ColumnListItem id="cardPartListItems">
+														<cells>
+															<Link id="bpParticipantsNo" press="handleNavigateBp" text="{insuranceClaimDetails>BusinessPartner}" />
+															<Text id="bpParticipantsFullName" text="{insuranceClaimDetails>BusinessPartnerName}" />
+															<Text id="bpParticipantBirth" text="{ path: 'insuranceClaimDetails>BirthDate',
+															type: 'sap.ui.model.type.Date',
+															formatOptions: {
+																source: {pattern: 'yyyy-MM-dd'},
+																style: 'medium'
+															}}"/>
+															<Text id="bpParticipantRole" text="{insuranceClaimDetails>InsurClmPartRoleText}" />
+															<Text id="bpParticipantCity" text="{insuranceClaimDetails>CityName}" />
+															<Text id="bpParticipantPostal" text="{insuranceClaimDetails>PostalCode}" />
+															<Text id="bpParticipantStreetname" text="{insuranceClaimDetails>StreetName}" />
+															<Text id="bpParticipantHouseno" text="{insuranceClaimDetails>HouseNumber}" />
+														</cells>
+													</ColumnListItem>
+												</items>
+											</Table>
+										</f:content>
+									</f:Card>
+									<f:Card id="relationshipsCard">
+										<f:header>
+											<card:Header id="relationshipsCardHeader" title="Relationships of Conscript - {businessPartnerPolhDetails>/value/BusinessPartnerFullName}" subtitle="{businessPartnerPolhDetails>/value/BusinessPartner}" press="handleNavigateBp"/>
+										</f:header>
+										<f:content>
+											<Table id="idRelationshipsTable"
+												inset="false"
+												items="{relationsOfBp>/value}"
+												>
+												<columns>
+													<Column id="colCardBpNo"  demandPopin="true">
+														<Text id="cardBpNo" text="BP Number" />
+													</Column>
+													<Column id="colCardBpFullName"  demandPopin="true">
+														<Text id="cardBpFullName" text="Full Name" />
+													</Column>
+													<Column id="colCardBpBirth"  demandPopin="true">
+														<Text id="cardBpBirth" text="Birth Date" />
+													</Column>
+													<Column id="colCardRole"  demandPopin="true">
+														<Text id="cardRole" text="Role" />
+													</Column>
+													<Column id="colCardBpId"  demandPopin="true">
+														<Text id="cardBpId" text="Identification" />
+													</Column>
+													<Column id="colCardBpNationality"  demandPopin="true">
+														<Text id="cardBpNationality" text="Nationality" />
+													</Column>
+													<Column id="colCardBpCategory"  demandPopin="true">
+														<Text id="cardBpCategory" text="BP Category" />
+													</Column>
+												</columns>
+												<items>
+													<ColumnListItem id="cardBpListItems">
+														<cells>
+															<Link id="bpLink" press="handleNavigateBp" text="{relationsOfBp>BusinessPartner2}" />
+															<Text id="bpRelationsFullName" text="{relationsOfBp>BpData/BusinessPartnerFullName}" />
+															<Text id="bpRelationsBirth" text="{ path: 'relationsOfBp>BpData/BirthDate',
+															type: 'sap.ui.model.type.Date',
+															formatOptions: {
+																source: {pattern: 'yyyy-MM-dd'},
+																style: 'medium'
+															}}"/>
+															<Text id="bpRole" text="{relationsOfBp>RelationshipTypeText}" />
+															<Text id="bpRelationsId" text="{relationsOfBp>BpData/_BuPaIdentification/0/BPIdentificationNumber}" />
+															<Text id="bpRelationsNationality" text="{relationsOfBp>BpData/BusPartNatText}" />
+															<Text id="bpRelationsCategory" text="{ path: 'relationsOfBp>BpData/BusinessPartnerCategory', formatter: '.handleShowBpCategory'}"/>
+														</cells>
+													</ColumnListItem>
+												</items>
+											</Table>
+										</f:content>
+									</f:Card>
+									<f:Card id="documentsCard" class="sapUiMediumMarginEnd">
+										<f:header>
+											<card:Header id="documentsCardHeader" title="Documents"/>
+										</f:header>
+										<f:content>
+											<Table id="idDocumentsTable"
+												inset="false"
+												items="{ path: 'insuranceClaimDetails>/value/_InsurClmDocCorr', sorter: {
+															path: 'insuranceClaimDetails>InsurClmPrintDate',
+															descending: false  
+														}}"
+                                                >
+												<headerToolbar>
+													<OverflowToolbar id="docToolbar">
+														<ToolbarSpacer id="docToolbarSpacer"/>
+														<Button
+															id="docToolBarActionBtn"
+															tooltip="Show Documents"
+															text="Show Documents"
+															icon="sap-icon://documents"
+															iconFirst="true"
+															press="handleShowDmsDocuments"/>
+													</OverflowToolbar>
+												</headerToolbar>
+												<columns>
+													<Column id="colCardDocNo"  demandPopin="true">
+														<Text id="cardDocNo" text="ID" />
+													</Column>
+													<Column id="colCardDocName"  demandPopin="true">
+														<Text id="cardDocName" text="Name" />
+													</Column>
+													<Column id="colCardDocType"  demandPopin="true">
+														<Text id="cardDocType" text="Type" />
+													</Column>
+													<Column id="colCardPrintDate"  demandPopin="true">
+														<Text id="cardPrintDate" text="Print Date" />
+													</Column>
+													<Column id="colCardBp"  demandPopin="true">
+														<Text id="cardBp" text="Business Partner" />
+													</Column>
+													<Column id="colCardAddress"  demandPopin="true">
+														<Text id="cardAddress" text="BP Address" />
+													</Column>
+												</columns>
+												<items>
+													<ColumnListItem id="cardDocumentListItems">
+														<cells>
+															<ObjectIdentifier id="docLink" title="{insuranceClaimDetails>InsurClmDocId}" />
+															<Text id="docName" text="{insuranceClaimDetails>InsurClmDocName}" />
+															<Text id="docType" text="{insuranceClaimDetails>InsurClmDocType}" />
+															<Text id="docPrintDate" text="{ path: 'insuranceClaimDetails>InsurClmPrintDate',
+																type: 'sap.ui.model.type.Date',
+																formatOptions: {
+																	source: {pattern: 'yyyy-MM-dd'},
+																	style: 'medium'
+																}}"
+															/>
+															<Text id="docBp" text="{insuranceClaimDetails>BpFullName}" />
+															<Text id="docAddress" text="{ parts: [{path: 'insuranceClaimDetails>BpAddressStreet'}, {path: 'insuranceClaimDetails>BpAddressHouseNo'}, {path: 'insuranceClaimDetails>BpAddressPostalCode'}, {path: 'insuranceClaimDetails>BpAddressCity'}]}"/>
+														</cells>
+													</ColumnListItem>
+												</items>
+											</Table>
+										</f:content>
+									</f:Card>
+								</layout:VerticalLayout>
+							</IconTabFilter>
+							<IconTabFilter id="tabBenefitCalculation" text="Benefit Calculations">
+								<layout:VerticalLayout id="procurementsVerticalLayout" class="sapUiContentPadding">
+									<f:Card id="procurementsCard">
+										<f:header>
+											<card:Header id="procurementsCardHeader" title="Benefit Log" subtitle="Procurements" />
+										</f:header>
+										<f:content>
+											 <Table id="idProcurementsTable"
+											 	mode="SingleSelect"
+												selectionChange="handleProcureSelect"
+                                                inset="false"
+												items="{ path: 'insuranceClaimDetails>/value/_InsurClmReqD', 
+														 sorter: [ 
+															{
+															 	path: 'insuranceClaimDetails>InsurClmCoverageTypeName',
+															 	descending: false  
+															},
+															{
+															 	path: 'insuranceClaimDetails>InsurBnftTypeName',
+															 	descending: false  
+															},
+															{
+															 	path: 'insuranceClaimDetails>InsurClmItemGroupingCatText',
+															 	descending: false  
+															}
+														]		
+													}"
+                                                >
+                                                <columns>
+                                                    <Column id="colProcurReqType"  demandPopin="true">
+                                                        <Text id="cardProcurReqType" text="Request Type" />
+                                                    </Column>
+													<Column id="colProcurCovName"  demandPopin="true">
+                                                        <Text id="cardProcurCovName" text="Sub Benefit" />
+                                                    </Column>
+                                                    <Column id="colProcurBenTypeName"  demandPopin="true">
+                                                        <Text id="cardProcurBenTypeName" text="Benefit Type" />
+                                                    </Column>
+													<Column id="colProcurStatus"  demandPopin="true">
+                                                        <Text id="cardProcurStatus" text="Status" />
+                                                    </Column>
+													 <Column id="colProcurValidFromDate"  demandPopin="true">
+                                                        <Text id="cardProcurValidFromDate" text="Valid From" />
+                                                    </Column>
+                                                    <Column id="colProcurValidToDate"  demandPopin="true">
+                                                        <Text id="cardProcurValidToDate" text="Valid To" />
+                                                    </Column>
+                                                    <Column id="colProcurAmount"  demandPopin="true">
+                                                        <Text id="cardProcurAmount" text="Total Balance" />
+                                                    </Column>
+                                                </columns>
+                                                <items>
+                                                    <ColumnListItem id="cardProcurListItems">
+                                                        <cells>
+															<ObjectIdentifier id="procurReqType" title="{insuranceClaimDetails>InsurClmItemGroupingCatText}" />
+															<Text id="procurCoverageName" text="{insuranceClaimDetails>InsurClmCoverageTypeName}" />
+															<Text id="procurBenTypeName" text="{insuranceClaimDetails>InsurBnftTypeName}" />
+															<Text id="procurStatus" text="{insuranceClaimDetails>InsurClmLifeCycStsName}" />
+                                                            <Text id="procurFromDate" text="{ path: 'insuranceClaimDetails>InsurClmItmGroupingFromDate',
+                                                                type: 'sap.ui.model.type.Date',
+                                                                formatOptions: {
+                                                                source: {pattern: 'yyyy-MM-dd'},
+                                                                style: 'medium'
+                                                            }}"/>
+															<Text id="procurToDate" text="{ path: 'insuranceClaimDetails>InsurClmItemGroupingToDate',
+                                                                type: 'sap.ui.model.type.Date',
+                                                                formatOptions: {
+                                                                source: {pattern: 'yyyy-MM-dd'},
+                                                                style: 'medium'
+                                                            }}"/>
+                                                            <Text id="procurAmount" text="{ parts: [{path: 'insuranceClaimDetails>InsurClmItemEvalAmount'}, {path: 'insuranceClaimDetails>InsurClmItemEvalCurrency'}], formatter: '.combineAmountCurrency'}"/>
+                                                        </cells>
+                                                    </ColumnListItem>
+                                                </items>
+                                            </Table>
+										</f:content>
+									</f:Card>
+								</layout:VerticalLayout>										
+							</IconTabFilter>
+							<IconTabFilter id="tabBrfPlusLogs" text="Calculation Information">
+								<layout:VerticalLayout id="brfVerticalLayout" class="sapUiContentPadding">
+									<f:Card id="brfCard">
+										<f:header>
+											<card:Header id="brfCardHeader" title="Calculation Information" />
+										</f:header>
+										<f:content>
+											 <Table id="idBrfTable"
+                                                inset="false"
+												items="{ path: 'insuranceClaimDetails>/value/_InsurClmSrvcsBrfOutput', 
+														sorter: [{
+															path: 'insuranceClaimDetails>exectype',
+															descending: true,
+															group: '.getGrouping'
+														},
+														{
+															path: 'insuranceClaimDetails>InsurClmCoverageTypeName',
+															descending: false
+														},
+														{
+															path: 'insuranceClaimDetails>InsurBnftTypeName',
+															descending: false
+														},
+														{
+															path: 'insuranceClaimDetails>Validfrom',
+															descending: false
+														},
+														{
+															path: 'insuranceClaimDetails>CreateDateTime',
+															descending: false
+														}
+														],
+														groupHeaderFactory: '.getGroupHeader'
+														}"
+                                                >
+                                                <columns>
+													<Column id="colBrfValidFrom" demandPopin="true">
+                                                        <Text id="cardBrfValidFrom" text="Valid From" />
+                                                    </Column>
+                                                    <Column id="colBrfParticipant" demandPopin="true">
+                                                        <Text id="cardBrfParticipant" text="Claimant" />
+                                                    </Column>
+													 <Column id="colBrfCovType" demandPopin="true">
+                                                        <Text id="cardBrfCovType" text="Sub Benefit" />
+                                                    </Column>
+                                                    <Column id="colBrfBenType" demandPopin="true">
+                                                        <Text id="cardBrfBenType" text="Benefit Type" />
+                                                    </Column>
+													<Column id="colBrfElig" demandPopin="true">
+                                                        <Text id="cardBrfElig" text="Eligible" />
+                                                    </Column>
+                                                    <Column id="colBrfStatus" demandPopin="true">
+                                                        <Text id="cardBrfStatus" text="Eligibility Reasoning" />
+                                                    </Column>
+                                                    <Column id="colBrfAmount" demandPopin="true">
+                                                        <Text id="cardBrfAmount" text="Amount" />
+                                                    </Column>
+													<Column id="colBrfCreatedOn" demandPopin="true">
+                                                        <Text id="cardBrfCreateOn" text="Creation Time" />
+                                                    </Column>
+                                                </columns>
+                                                <items>
+                                                    <ColumnListItem id="cardBrfListItems">
+                                                        <cells>
+														<ObjectIdentifier id="validFromBrf" title="{ path: 'insuranceClaimDetails>Validfrom',
+															type: 'sap.ui.model.type.Date',
+															formatOptions: {
+																source: {pattern: 'yyyy-MM-dd'},
+																style: 'medium'
+															}}"/>
+															<Text id="brfParticipant" text="{insuranceClaimDetails>BusinessPartnerName}" />
+															<Text id="brfCovType" text="{insuranceClaimDetails>InsurClmCoverageTypeName}" />
+															<Text id="brfBenType" text="{insuranceClaimDetails>InsurBnftTypeName}" />
+															<Text id="brfFamilyElig" text="{insuranceClaimDetails>EligibleText}"/>
+															<Text id="brfStatus" text="{insuranceClaimDetails>StatusText}" />
+                                                            <Text id="brfAmount" text="{ parts: [{path: 'insuranceClaimDetails>Amount'}, {path: 'insuranceClaimDetails>Currency'}, {path: 'insuranceClaimDetails>exectype'}], formatter: '.combineAmountCurrency'}"/>
+															<Text id="creationDateEligible" text="{path: 'insuranceClaimDetails>CreateDateTime', type: 'sap.ui.model.type.Date',
+															formatOptions: {
+																source: {
+																	pattern: 'yyyy-MM-ddTHH:mm:ss.AAAZ'
+																},
+																pattern: 'dd/MM/yyyy HH:mm a'
+															}}"/>
+                                                        </cells>
+                                                    </ColumnListItem>
+                                                </items>
+                                            </Table>
+										</f:content>
+									</f:Card>
+								</layout:VerticalLayout>	
+							</IconTabFilter>
+							<IconTabFilter id="tabPayments" text="Payments">
+								<layout:VerticalLayout id="paymentsVerticalLayout" class="sapUiContentPadding">
+									<f:Card id="recoveryCard">
+										<f:header>
+											<card:Header id="recoveryHeader" title="Recovery" />
+										</f:header>
+										<f:content>
+											<Table id="recoveryTable"
+												mode="SingleSelect"
+												selectionChange="handleRecoverySelect"
+												inset="false"
+												items="{ path: 'insuranceClaimDetails>/value/PaytIn', sorter: {
+															path: 'insuranceClaimDetails>InsurClmPaytPostgDte',
+															descending: false  
+														}}"
+												>
+												<headerToolbar>
+													<OverflowToolbar id="revoceryToolbar">
+														<ToolbarSpacer id="revoceryToolbarSpacer"/>
+														<Button
+															id="revoceryToolbarBtn"
+															tooltip="Sort"
+															icon="sap-icon://sort"
+															press="handleSortButtonPressed"/>
+													</OverflowToolbar>
+												</headerToolbar>
+												<columns>
+													<Column id="paytinDue" >
+														<Text id="paytinDueText" text="Due Date" />
+													</Column>
+													<Column id="paytForPaid">
+														<Text id="paytForPaidText" text="Paid For"/>
+													</Column>
+													<Column id="amountPaid">
+														<Text id="amountPaidText" text="Amount" />
+													</Column>
+													<Column id="paytinPosting" >
+														<Text id="paytinPostingText" text="Posting Date" />
+													</Column>
+													<Column id="paytinPaidStatus" >
+														<Text id="paytinPaidStatusText" text="Status" />
+													</Column>
+													<Column id="paytinPaid" >
+														<Text id="paytinPaidText" text="Paid To / Recovered From" />
+													</Column>
+													<Column id="paytinInvoiceRef" >
+														<Text id="paytinInvoiceRefText" text="Viitenumero" />
+													</Column>
+													<Column id="referencePaid" >
+														<Text id="referencePaidText" text="Document Number" />
+													</Column>
+												</columns>
+												<items>
+													<ColumnListItem id="itemsPaid">
+														<cells>
+															<ObjectIdentifier id="dueDatePaid" title="{ path: 'insuranceClaimDetails>InsurClmPaytDueDate',
+															type: 'sap.ui.model.type.Date',
+															formatOptions: {
+																source: {pattern: 'yyyy-MM-dd'},
+																style: 'medium'
+															}}"/>
+															<Text id="benefitTypePaid" text="{insuranceClaimDetails>InsurBnftTypeName}" />
+															<Text id="amountPaidItem" text="{ parts: [{path: 'insuranceClaimDetails>InsurClmPaytRequestedAmount'}, {path: 'insuranceClaimDetails>InsurClmPaymentCurrency'}], formatter: '.combineAmountCurrency'}" />
+															<Text id="postDatePaid" text="{ path: 'insuranceClaimDetails>InsurClmPaytPostgDte',
+															type: 'sap.ui.model.type.Date',
+															formatOptions: {
+																source: {pattern: 'yyyy-MM-dd'},
+																style: 'medium'
+															}}"/>
+															<Text id="payeeStatusPaid" text="{insuranceClaimDetails>InsurClmPaytStatusName}" />
+															<Text id="payeeNamePaid" text="{insuranceClaimDetails>PayeeName}" />
+															<Text id="payeeInvoiceRefPaid" text="{insuranceClaimDetails>InsurClmInvoiceRef}" />
+															<Link id="referencePaidItem" press="handleNavigateDocument" text="{insuranceClaimDetails>InsurClmPaytDocRefInSubLedger}" />
+														</cells>
+													</ColumnListItem>
+												</items>
+											</Table>
+										</f:content>
+									</f:Card>
+									<f:Card id="outgoingPayments">
+										<f:header>
+											<card:Header id="outgoingHeader" title="Outgoing" />
+										</f:header>
+										<f:content>
+											<Table id="outgoingTable"
+												inset="false"
+												items="{ path: 'insuranceClaimDetails>/value/PaytOut', sorter: {
+															path: 'insuranceClaimDetails>InsurClmPaytPostgDte',
+															descending: false  
+														}}"
+												>
+												<headerToolbar>
+													<OverflowToolbar id="outgoingToolbar">
+														<ToolbarSpacer id="outgoingToolbarSpacer"/>
+														<Button
+															id="outgoingToolbarBtn"
+															tooltip="Sort"
+															icon="sap-icon://sort"
+															press="handleSortButtonPressed"/>
+													</OverflowToolbar>
+												</headerToolbar>
+												<columns>
+													<Column id="outgoingDue" >
+														<Text id="outgoingDueText" text="Due Date" />
+													</Column>
+													<Column id="paytForoutgoing" >
+														<Text id="paytForOutgoingText" text="Paid For" />
+													</Column>
+													<Column id="amountOutgoing" >
+														<Text id="amountOutgoingText" text="Amount" />
+													</Column>
+													<Column id="outgoingPosting" >
+														<Text id="outgoingPostingText" text="Posting Date" />
+													</Column>
+													<Column id="outgoingPaidStatus" >
+														<Text id="outgoingPaidStatusText" text="Status" />
+													</Column>
+													<Column id="outgoingPaid" >
+														<Text id="outgoingPaidText" text="Paid To / Recovered From" />
+													</Column>
+													<Column id="outgoingInvoiceRefPaid" >
+														<Text id="outgoingInvoiceRefText" text="Viitenumero" />
+													</Column>
+													<Column id="referenceOutgoing" >
+														<Text id="referenceOutgoingText" text="Document Number" />
+													</Column>
+												</columns>
+												<items>
+													<ColumnListItem id="itemsOutgoing">
+														<cells>
+															<ObjectIdentifier id="dueDateOutgoing" title="{ path: 'insuranceClaimDetails>InsurClmPaytDueDate',
+															type: 'sap.ui.model.type.Date',
+															formatOptions: {
+																source: {pattern: 'yyyy-MM-dd'},
+																style: 'medium'
+															}}"/>
+															<Text id="benefitTypeOutgoing" text="{insuranceClaimDetails>InsurBnftTypeName}"/>	
+															<Text id="amountOutgoingItem" text="{ parts: [{path: 'insuranceClaimDetails>InsurClmPaytAmt'}, {path: 'insuranceClaimDetails>InsurClmPaymentCurrency'}], formatter: '.combineAmountCurrency'}" /> 
+															<Text id="postDateOutgoing" text="{ path: 'insuranceClaimDetails>InsurClmPaytPostgDte',
+															type: 'sap.ui.model.type.Date',
+															formatOptions: {
+																source: {pattern: 'yyyy-MM-dd'},
+																style: 'medium'
+															}}"/>
+															<Text id="payeeStatusOutgoing" text="{insuranceClaimDetails>InsurClmPaytStatusName}" />
+															<Text id="payeeNameOutgoing" text="{insuranceClaimDetails>PayeeName}" />
+															<Text id="payeeInvoiceRefOutgoing" text="{insuranceClaimDetails>InsurClmInvoiceRef}" />
+															<Link id="referenceOutgoingItem" press="handleNavigateDocument" text="{insuranceClaimDetails>InsurClmPaytDocRefInSubLedger}" />
+														</cells>
+													</ColumnListItem>
+												</items>
+											</Table>
+										</f:content>
+									</f:Card>
+									<f:Card id="upcomingPayments">
+										<f:header>
+											<card:Header id="upcomingHeader" title="Upcoming"/>
+										</f:header>
+										<f:content>
+											<Table id="upcomingTable"
+												inset="false"
+												items="{ 	path: 'insuranceClaimDetails>/value/_InsurClmFutPayt', 
+															filters: [
+																{
+																	path: 'InsurClmItemEvalAmount',
+																	operator: 'NE',
+																	value1: 0
+																}
+															],
+															sorter: {
+																path: 'insuranceClaimDetails>InsurClmValidFrom',
+																descending: false
+															}
+														}"
+												>
+												<headerToolbar>
+													<OverflowToolbar id="upcomingToolbar">
+														<ToolbarSpacer id="upcomingToolbarSpacer"/>
+														<Button
+															id="upcomingToolbarBtn"
+															tooltip="Sort"
+															icon="sap-icon://sort"
+															press="handleSortButtonPressed"/>
+													</OverflowToolbar>
+												</headerToolbar>
+												<columns>
+													<Column id="upcomingDue"  demandPopin="true">
+														<Text id="upcomingDueText" text="Due Date" />
+													</Column>
+													<Column id="paidForUpcoming"  demandPopin="true">
+														<Text id="paidForUpcomingText" text="Paid For" />
+													</Column>
+													<Column id="amountUpcoming"  demandPopin="true">
+														<Text id="amountUpcomingText" text="Amount" />
+													</Column>
+													<Column id="futureValidFrom"  demandPopin="true">
+														<Text id="futureValidFromText" text="Valid From" />
+													</Column>
+													<Column id="futureValidTo"  demandPopin="true">
+														<Text id="futureValidToText" text="Valid To" />
+													</Column>
+												</columns>
+												<items>
+													<ColumnListItem id="itemsUpcoming">
+														<cells>
+															<ObjectIdentifier id="postDateUpcoming" title="{ path: 'insuranceClaimDetails>InsurClmValidFrom',
+															type: 'sap.ui.model.type.Date',
+															formatOptions: {
+																source: {pattern: 'yyyy-MM-dd'},
+																style: 'medium'
+															}}"/>
+															<Text id="paidForUpcomingItem" text="{insuranceClaimDetails>InsurBnftTypeName}" />
+															<Text id="amountUpcomingItem" text="{ parts: [{path: 'insuranceClaimDetails>InsurClmItemEvalAmount'}, {path: 'insuranceClaimDetails>InsurClmItemEvalCurrency'}], formatter: '.combineAmountCurrency'}" /> 
+															<Text id="validFromDateFuture" text="{ path: 'insuranceClaimDetails>InsurClmValidFrom',
+															type: 'sap.ui.model.type.Date',
+															formatOptions: {
+																source: {pattern: 'yyyy-MM-dd'},
+																style: 'medium'
+															}}"/>
+															<Text id="validToDateFuture" text="{ path: 'insuranceClaimDetails>InsurClmValidTo',
+															type: 'sap.ui.model.type.Date',
+															formatOptions: {
+																source: {pattern: 'yyyy-MM-dd'},
+																style: 'medium'
+															}}"/>
+														</cells>
+													</ColumnListItem>
+												</items>
+											</Table>
+										</f:content>
+									</f:Card>
+								</layout:VerticalLayout>
+							</IconTabFilter>
+						</items>
+					</IconTabBar>
+				</f:content>
+            </f:DynamicPage>
+        </content>
+    </Page>
+</mvc:View>
